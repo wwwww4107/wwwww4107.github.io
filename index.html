@@ -26,15 +26,15 @@
         }
     </script>
     <style>
-        /* 부드러운 배경 그라데이션 애니메이션 효과 */
+        /* 부드러운 배경 그라데이션 애니메이션 효과 표준화 */
         .gradient-bg {
             background: linear-gradient(-45deg, #eef2ff, #f5f3ff, #f0fdf4, #ecfeff);
-            background-size: 400% 400% fluid;
+            background-size: 400% 400%;
             animation: gradient 15s ease infinite;
         }
         .dark .gradient-bg {
             background: linear-gradient(-45deg, #0f172a, #1e1b4b, #111827, #020617);
-            background-size: 400% 400% fluid;
+            background-size: 400% 400%;
             animation: gradient 15s ease infinite;
         }
         @keyframes gradient {
@@ -43,6 +43,20 @@
             100% { background-position: 0% 50%; }
         }
     </style>
+    <script>
+        // 초기 다크모드 설정을 랜더링 전에 동기 처리하여 깜빡임 방지 (Try-Catch 안전 보호막 적용)
+        try {
+            const isDark = localStorage.getItem('color-theme') === 'dark' || 
+                (!('color-theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches);
+            if (isDark) {
+                document.documentElement.classList.add('dark');
+            } else {
+                document.documentElement.classList.remove('dark');
+            }
+        } catch (e) {
+            console.warn("Storage access restricted. Defaulting to system theme.");
+        }
+    </script>
 </head>
 <body class="gradient-bg text-slate-800 dark:text-slate-100 min-h-screen font-sans transition-colors duration-300">
 
@@ -59,6 +73,7 @@
             <div class="hidden md:flex items-center gap-8">
                 <a href="#home" class="font-medium hover:text-brand-600 dark:hover:text-brand-400 transition-colors">소개</a>
                 <a href="#about" class="font-medium hover:text-brand-600 dark:hover:text-brand-400 transition-colors">프로필</a>
+                <a href="#roadmap" class="font-medium hover:text-brand-600 dark:hover:text-brand-400 transition-colors">성장 계획</a>
                 <a href="#contact" class="font-medium hover:text-brand-600 dark:hover:text-brand-400 transition-colors">연락처</a>
             </div>
 
@@ -66,15 +81,19 @@
             <div class="flex items-center gap-4">
                 <!-- 테마 스위처 -->
                 <button id="theme-toggle" class="p-2 rounded-lg bg-slate-100 dark:bg-slate-800 hover:ring-2 hover:ring-slate-300 dark:hover:ring-slate-700 transition-all" aria-label="Toggle theme">
-                    <!-- 해 모양 아이콘 -->
-                    <svg id="theme-toggle-light-icon" class="hidden w-5 h-5 text-amber-500" fill="currentColor" viewBox="0 0 20 20"><path d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 17.95a1 1 0 011.414 0l.707.707a1 1 0 11-1.414 1.414l-.707-.707a1 1 0 010-1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM4 11a1 1 0 100-2H3a1 1 0 100 2h1z" fill-rule="evenodd" clip-rule="evenodd"></path></svg>
-                    <!-- 달 모양 아이콘 -->
-                    <svg id="theme-toggle-dark-icon" class="hidden w-5 h-5 text-indigo-500" fill="currentColor" viewBox="0 0 20 20"><path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path></svg>
+                    <svg id="theme-toggle-light-icon" class="hidden w-5 h-5 text-amber-500" fill="currentColor" viewBox="0 0 20 20">
+                        <path d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 17.95a1 1 0 011.414 0l.707.707a1 1 0 11-1.414 1.414l-.707-.707a1 1 0 010-1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM4 11a1 1 0 100-2H3a1 1 0 100 2h1z" fill-rule="evenodd" clip-rule="evenodd"></path>
+                    </svg>
+                    <svg id="theme-toggle-dark-icon" class="hidden w-5 h-5 text-indigo-500" fill="currentColor" viewBox="0 0 20 20">
+                        <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path>
+                    </svg>
                 </button>
                 
                 <!-- 모바일 메뉴 버튼 -->
                 <button id="mobile-menu-button" class="md:hidden p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800" aria-label="Toggle menu">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path>
+                    </svg>
                 </button>
             </div>
         </div>
@@ -83,6 +102,7 @@
         <div id="mobile-menu" class="hidden md:hidden bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 px-4 py-4 flex flex-col gap-3">
             <a href="#home" class="mobile-nav-link block py-2 px-3 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-800 font-medium">소개</a>
             <a href="#about" class="mobile-nav-link block py-2 px-3 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-800 font-medium">프로필</a>
+            <a href="#roadmap" class="mobile-nav-link block py-2 px-3 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-800 font-medium">성장 계획</a>
             <a href="#contact" class="mobile-nav-link block py-2 px-3 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-800 font-medium">연락처</a>
         </div>
     </nav>
@@ -100,12 +120,12 @@
                 WELCOME TO MY PORTFOLIO
             </div>
             
-            <h1 class="text-4xl sm:text-6xl font-black tracking-tight mb-6 leading-tight">
+            <h1 class="text-2xl sm:text-4xl font-extrabold tracking-tight mb-4 leading-tight">
                 안녕하세요, <span class="bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 dark:from-blue-400 dark:via-indigo-400 dark:to-purple-400 bg-clip-text text-transparent">풀스택 개발자</span>를 지망하는<br class="hidden sm:inline">
                 <span class="underline decoration-indigo-500/30 decoration-wavy">김태민</span>입니다.
             </h1>
             
-            <p class="text-base sm:text-xl text-slate-600 dark:text-slate-300 max-w-xl mb-10 leading-relaxed font-light">
+            <p class="text-sm sm:text-base text-slate-600 dark:text-slate-300 max-w-md mb-8 leading-relaxed font-light">
                 새로운 기술을 학습하고 사용자 가치를 구현하는 것을 즐깁니다.<br>
                 안정적이고 창의적인 풀스택 개발자로 거듭나기 위해 정진하고 있습니다.
             </p>
@@ -133,13 +153,13 @@
             </div>
 
             <div class="grid md:grid-cols-12 gap-12 items-center">
-                <!-- 프로필 그래픽 (AI 로고 형상) -->
+                <!-- 프로필 그래픽 -->
                 <div class="md:col-span-5 flex justify-center">
                     <div class="relative group">
                         <div class="absolute -inset-1.5 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-full blur opacity-25 group-hover:opacity-40 transition duration-1000"></div>
                         
                         <div class="relative w-64 h-64 rounded-full bg-white dark:bg-slate-800 border-2 border-slate-200 dark:border-slate-700 flex flex-col items-center justify-center p-6 shadow-xl">
-                            <svg class="w-24 h-24 text-indigo-500 dark:text-indigo-400 mb-2 animate-pulse" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                            <svg class="w-24 h-24 text-indigo-500 dark:text-indigo-400 mb-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M12 18a3.75 3.75 0 00.495-7.467 5.99 5.99 0 00-1.925 3.546 5.974 5.974 0 01-2.133-1A3.75 3.75 0 0012 18z" />
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M9.75 9.75c0 .414-.168.75-.5.75s-.5-.336-.5-.75.168-.75.5-.75.5.336.5.75zM14.25 9.75c0 .414-.168.75-.5.75s-.5-.336-.5-.75.168-.75.5-.75.5.336.5.75z" />
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25zM12 5.25c1.657 0 3 1.343 3 3a3 3 0 01-3 3 3 3 0 01-3-3c0-1.657 1.343-3 3-3z" />
@@ -156,60 +176,140 @@
                         어제보다 오늘 더 성장하는 개발자, <span class="text-brand-600 dark:text-brand-400">김태민</span>입니다.
                     </h3>
                     
-                    <p class="text-slate-600 dark:text-slate-300 leading-relaxed font-light">
+                    <p class="text-slate-600 dark:text-slate-300 leading-relaxed font-light text-sm sm:text-base">
                         안녕하세요! 풀스택 기술과 소프트웨어 역량의 깊이 있는 발전에 흥미를 느끼고 연구하는 동양미래대학교 학생입니다. 백엔드 아키텍처 및 프론트엔드 환경의 구조적 설계를 바탕으로 웹 서비스의 핵심을 가치있게 구현하기 위해 노력하고 있습니다.
                     </p>
-                    <p class="text-slate-600 dark:text-slate-300 leading-relaxed font-light">
+                    <p class="text-slate-600 dark:text-slate-300 leading-relaxed font-light text-sm sm:text-base">
                         매일 부딪히는 문제와 트렌디한 기술들을 정독하며, 단순 코딩을 넘어 전체적인 아키텍처와 사용자 중심의 성능 최적화를 생각하는 폭넓은 개발 시야를 기르고 있습니다.
                     </p>
 
                     <!-- 핵심 프로필 카드 정보 -->
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-4">
-                        <!-- 거주지 -->
+                        <!-- 위치 -->
                         <div class="flex items-center gap-4 p-4 rounded-xl bg-white/50 dark:bg-slate-800/50 border border-slate-200/50 dark:border-slate-800/50">
                             <div class="p-2.5 rounded-lg bg-indigo-50 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400">
-                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                                </svg>
                             </div>
                             <div>
                                 <p class="text-xs text-slate-400 dark:text-slate-500 font-medium uppercase">위치</p>
-                                <p class="font-semibold text-sm">대한민국, 서울특별시</p>
+                                <p class="font-semibold text-xs sm:text-sm">대한민국, 서울특별시</p>
                             </div>
                         </div>
                         
                         <!-- 소속 학교 -->
                         <div class="flex items-center gap-4 p-4 rounded-xl bg-white/50 dark:bg-slate-800/50 border border-slate-200/50 dark:border-slate-800/50">
                             <div class="p-2.5 rounded-lg bg-indigo-50 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400">
-                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l9-5-9-5-9 5 9 5z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z"></path></svg>
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l9-5-9-5-9 5 9 5z"></path>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z"></path>
+                                </svg>
                             </div>
                             <div>
                                 <p class="text-xs text-slate-400 dark:text-slate-500 font-medium uppercase">학력</p>
-                                <p class="font-semibold text-sm">동양미래대 컴퓨터소프트웨어공학과</p>
+                                <p class="font-semibold text-xs sm:text-sm">동양미래대 컴퓨터소프트웨어공학과</p>
                             </div>
                         </div>
 
-                        <!-- 학번 / 학학년 -->
+                        <!-- 학번 / 학년 -->
                         <div class="flex items-center gap-4 p-4 rounded-xl bg-white/50 dark:bg-slate-800/50 border border-slate-200/50 dark:border-slate-800/50">
                             <div class="p-2.5 rounded-lg bg-indigo-50 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400">
-                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V8a2 2 0 00-2-2h-5m-4 0V5a2 2 0 114 0v1m-4 0a2 2 0 104 0m-5 8a2 2 0 100-4 2 2 0 000 4zm0 0c1.306 0 2.417.835 2.83 2M9 14a3.001 3.001 0 00-2.83 2M15 11h3m-3 4h2"></path></svg>
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V8a2 2 0 00-2-2h-5m-4 0V5a2 2 0 114 0v1m-4 0a2 2 0 104 0m-5 8a2 2 0 100-4 2 2 0 000 4zm0 0c1.306 0 2.417.835 2.83 2M9 14a3.001 3.001 0 00-2.83 2M15 11h3m-3 4h2"></path>
+                                </svg>
                             </div>
                             <div>
-                                <p class="text-xs text-slate-400 dark:text-slate-500 font-medium uppercase">학번 및 학학년</p>
-                                <p class="font-semibold text-sm">20260714 / 1학년 재학</p>
+                                <p class="text-xs text-slate-400 dark:text-slate-500 font-medium uppercase">학번 및 학년</p>
+                                <p class="font-semibold text-xs sm:text-sm">20260714 / 1학년 [Y1] 재학</p>
                             </div>
                         </div>
 
                         <!-- 주요 관심 분야 -->
                         <div class="flex items-center gap-4 p-4 rounded-xl bg-white/50 dark:bg-slate-800/50 border border-slate-200/50 dark:border-slate-800/50">
                             <div class="p-2.5 rounded-lg bg-indigo-50 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400">
-                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"></path></svg>
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"></path>
+                                </svg>
                             </div>
                             <div>
                                 <p class="text-xs text-slate-400 dark:text-slate-500 font-medium uppercase">관심 분야</p>
-                                <p class="font-semibold text-sm">프론트엔드 & 백엔드 풀스택</p>
+                                <p class="font-semibold text-xs sm:text-sm">프론트엔드 & 백엔드 풀스택</p>
                             </div>
                         </div>
                     </div>
                 </div>
+            </div>
+        </section>
+
+        <!-- 성장 로드맵 섹션 (Roadmap) -->
+        <section id="roadmap" class="py-24 border-t border-slate-200/50 dark:border-slate-800/50">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl font-bold tracking-tight mb-2">My Growth Roadmap</h2>
+                <div class="h-1.5 w-12 bg-indigo-500 mx-auto rounded-full"></div>
+                <p class="text-slate-500 dark:text-slate-400 mt-4 max-w-md mx-auto text-sm">탄탄한 기본기를 바탕으로 신뢰할 수 있는 개발자가 되기 위한 단계별 학습 여정입니다.</p>
+            </div>
+
+            <!-- 세로형 타임라인 레이아웃 -->
+            <div class="relative max-w-2xl mx-auto pl-6 sm:pl-8 border-l border-slate-200 dark:border-slate-800 space-y-12">
+                
+                <!-- 단계 1: 현재 (1학년) -->
+                <div class="relative">
+                    <!-- 타임라인 포인트 -->
+                    <span class="absolute -left-[31px] sm:-left-[35px] top-1.5 flex h-4 w-4 sm:h-5 sm:w-5 items-center justify-center rounded-full bg-brand-600 text-white ring-8 ring-white dark:ring-slate-950">
+                        <span class="h-2 w-2 rounded-full bg-white"></span>
+                    </span>
+                    <div class="bg-white/60 dark:bg-slate-800/60 p-6 rounded-2xl border border-slate-200/50 dark:border-slate-700/50 shadow-sm transition-all hover:translate-x-1">
+                        <span class="inline-block text-xs font-bold bg-brand-100 dark:bg-brand-900/40 text-brand-700 dark:text-brand-300 px-3 py-1 rounded-full mb-3">1학년 (현재) | 기본기 다지기</span>
+                        <h4 class="text-lg font-bold mb-2">컴퓨터 공학기초 & 웹 기본 기술</h4>
+                        <p class="text-sm text-slate-500 dark:text-slate-400 leading-relaxed font-light mb-3">
+                            자료구조와 알고리즘의 뼈대가 되는 프로그래밍 기초(Python/C언어)를 완벽하게 학습하고, 반응형 구조를 직접 구축해 보며 웹퍼블리싱(HTML/CSS)의 원리를 이해합니다.
+                        </p>
+                        <div class="flex flex-wrap gap-2">
+                            <span class="text-xs px-2.5 py-1 rounded bg-slate-100 dark:bg-slate-800 border border-slate-200/30">C / Python</span>
+                            <span class="text-xs px-2.5 py-1 rounded bg-slate-100 dark:bg-slate-800 border border-slate-200/30">HTML5 & CSS3</span>
+                            <span class="text-xs px-2.5 py-1 rounded bg-slate-100 dark:bg-slate-800 border border-slate-200/30">Git & GitHub</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 단계 2: 도약 (2학년) -->
+                <div class="relative">
+                    <span class="absolute -left-[31px] sm:-left-[35px] top-1.5 flex h-4 w-4 sm:h-5 sm:w-5 items-center justify-center rounded-full bg-slate-200 dark:bg-slate-800 ring-8 ring-white dark:ring-slate-950">
+                    </span>
+                    <div class="bg-white/40 dark:bg-slate-900/40 p-6 rounded-2xl border border-slate-200/20 dark:border-slate-800/20 shadow-sm opacity-80 hover:opacity-100 transition-all hover:translate-x-1">
+                        <span class="inline-block text-xs font-semibold bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 px-3 py-1 rounded-full mb-3">2학년 | 풀스택 도약</span>
+                        <h4 class="text-lg font-bold mb-2">프레임워크 학습 및 데이터베이스 제어</h4>
+                        <p class="text-sm text-slate-500 dark:text-slate-400 leading-relaxed font-light mb-3">
+                            본격적으로 풀스택 아키텍처를 구현하기 위해 React, Node.js 등의 모던 자바스크립트 기술 생태계를 이해하고, SQL 데이터베이스를 연동하여 실제 데이터를 제어하는 능력을 키웁니다.
+                        </p>
+                        <div class="flex flex-wrap gap-2">
+                            <span class="text-xs px-2.5 py-1 rounded bg-slate-100/50 dark:bg-slate-800/50">React / Javascript ES6+</span>
+                            <span class="text-xs px-2.5 py-1 rounded bg-slate-100/50 dark:bg-slate-800/50">Node.js / Express</span>
+                            <span class="text-xs px-2.5 py-1 rounded bg-slate-100/50 dark:bg-slate-800/50">SQL & NoSQL</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 단계 3: 완성 (3학년 및 그 이후) -->
+                <div class="relative">
+                    <span class="absolute -left-[31px] sm:-left-[35px] top-1.5 flex h-4 w-4 sm:h-5 sm:w-5 items-center justify-center rounded-full bg-slate-200 dark:bg-slate-800 ring-8 ring-white dark:ring-slate-950">
+                    </span>
+                    <div class="bg-white/40 dark:bg-slate-900/40 p-6 rounded-2xl border border-slate-200/20 dark:border-slate-800/20 shadow-sm opacity-80 hover:opacity-100 transition-all hover:translate-x-1">
+                        <span class="inline-block text-xs font-semibold bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 px-3 py-1 rounded-full mb-3">3학년 | 실전 프로젝트 & 완성</span>
+                        <h4 class="text-lg font-bold mb-2">클라우드 배포 및 AI 서비스 연동</h4>
+                        <p class="text-sm text-slate-500 dark:text-slate-400 leading-relaxed font-light mb-3">
+                            작성한 백엔드와 프론트엔드 서비스를 직접 클라우드 플랫폼(AWS/Vercel)에 릴리즈하고 배포 프로세스를 이해합니다. 나아가 AI API 연동 프로젝트를 기획해 완결성 있는 포트폴리오를 구성합니다.
+                        </p>
+                        <div class="flex flex-wrap gap-2">
+                            <span class="text-xs px-2.5 py-1 rounded bg-slate-100/50 dark:bg-slate-800/50">AWS Cloud</span>
+                            <span class="text-xs px-2.5 py-1 rounded bg-slate-100/50 dark:bg-slate-800/50">Docker / CI/CD</span>
+                            <span class="text-xs px-2.5 py-1 rounded bg-slate-100/50 dark:bg-slate-800/50">AI API Integration</span>
+                        </div>
+                    </div>
+                </div>
+
             </div>
         </section>
 
@@ -234,13 +334,17 @@
                     <div class="space-y-4">
                         <div class="flex items-center gap-3 text-sm">
                             <div class="p-2 rounded-lg bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300">
-                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+                                </svg>
                             </div>
                             <span>taemin2026@donga.example.com</span>
                         </div>
                         <div class="flex items-center gap-3 text-sm">
                             <div class="p-2 rounded-lg bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300">
-                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg>
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
+                                </svg>
                             </div>
                             <span>동양미래대학교 고척 캠퍼스</span>
                         </div>
@@ -288,38 +392,62 @@
 
     <!-- 인터랙티브 스크립트 기능 처리 -->
     <script>
-        // 1. 다크 모드 핸들러
+        // DOM 요소 캐싱
         const themeToggleBtn = document.getElementById('theme-toggle');
         const lightIcon = document.getElementById('theme-toggle-light-icon');
         const darkIcon = document.getElementById('theme-toggle-dark-icon');
-
-        // 테마 검증 및 초기화 적용
-        if (localStorage.getItem('color-theme') === 'dark' || (!('color-theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
-            document.documentElement.classList.add('dark');
-            lightIcon.classList.remove('hidden');
-        } else {
-            document.documentElement.classList.remove('dark');
-            darkIcon.classList.remove('hidden');
-        }
-
-        themeToggleBtn.addEventListener('click', () => {
-            lightIcon.classList.toggle('hidden');
-            darkIcon.classList.toggle('hidden');
-
-            if (document.documentElement.classList.contains('dark')) {
-                document.documentElement.classList.remove('dark');
-                localStorage.setItem('color-theme', 'light');
-            } else {
-                document.documentElement.classList.add('dark');
-                localStorage.setItem('color-theme', 'dark');
-            }
-        });
-
-        // 2. 모바일 내비게이션 토글 제어
+        
         const mobileMenuBtn = document.getElementById('mobile-menu-button');
         const mobileMenu = document.getElementById('mobile-menu');
         const mobileLinks = document.querySelectorAll('.mobile-nav-link');
 
+        // 테마 아이콘 UI 상태 변경용 헬퍼 함수
+        function updateThemeIcons(isDark) {
+            if (isDark) {
+                lightIcon.classList.remove('hidden');
+                darkIcon.classList.add('hidden');
+            } else {
+                lightIcon.classList.add('hidden');
+                darkIcon.classList.remove('hidden');
+            }
+        }
+
+        // 초기 테마 상태 감지 및 아이콘 동기화 (보안 예외 보호망 처리)
+        let systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        let initialDarkState = false;
+
+        try {
+            const savedTheme = localStorage.getItem('color-theme');
+            if (savedTheme === 'dark' || (!savedTheme && systemPrefersDark)) {
+                initialDarkState = true;
+            }
+        } catch (e) {
+            // 로컬 스토리지 접근이 차단된 특수 iframe 환경인 경우 시스템 테마를 따름
+            initialDarkState = systemPrefersDark;
+        }
+
+        updateThemeIcons(initialDarkState);
+
+        // 테마 토글 이벤트 리스너
+        themeToggleBtn.addEventListener('click', () => {
+            const isCurrentDark = document.documentElement.classList.contains('dark');
+            
+            if (isCurrentDark) {
+                document.documentElement.classList.remove('dark');
+                updateThemeIcons(false);
+                try {
+                    localStorage.setItem('color-theme', 'light');
+                } catch (e) {}
+            } else {
+                document.documentElement.classList.add('dark');
+                updateThemeIcons(true);
+                try {
+                    localStorage.setItem('color-theme', 'dark');
+                } catch (e) {}
+            }
+        });
+
+        // 모바일 내비게이션 토글 제어
         mobileMenuBtn.addEventListener('click', () => {
             mobileMenu.classList.toggle('hidden');
         });
@@ -330,7 +458,7 @@
             });
         });
 
-        // 3. 연락처 데이터 제출 핸들러 (Mock 전송)
+        // 연락처 데이터 제출 핸들러 (Mock 전송 및 무작동 방지 처리)
         function handleContactSubmit(event) {
             event.preventDefault();
             const successBanner = document.getElementById('submit-success');
